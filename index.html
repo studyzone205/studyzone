@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - StudyZore</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h1>StudyZore Login</h1>
+  <input type="text" id="loginId" placeholder="Owner ID or Email" />
+  <input type="password" id="loginPass" placeholder="Password" />
+  <button id="loginBtn">Login</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCbsXCGUSxuxyaHZYYQ92d8NBuKInCyQVg",
+  authDomain: "studyzore.firebaseapp.com",
+  projectId: "studyzore",
+  storageBucket: "studyzore.firebasestorage.app",
+  messagingSenderId: "770577825644",
+  appId: "1:770577825644:web:143bcd17c77274410c3d49",
+  measurementId: "G-JVW56M9YL4"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const OWNER_ID = "marvel";
+const OWNER_PASS = "ripun";
+
+const loginBtn = document.getElementById("loginBtn");
+loginBtn.addEventListener("click", async () => {
+  const id = document.getElementById("loginId").value.trim();
+  const pass = document.getElementById("loginPass").value.trim();
+  if(!id || !pass) return alert("Enter ID and password!");
+
+  if(id === OWNER_ID && pass === OWNER_PASS){
+    localStorage.setItem("role","owner");
+    window.location.href = "home.html";
+    return;
+  }
+
+  try{
+    const userCredential = await signInWithEmailAndPassword(auth, id, pass);
+    localStorage.setItem("role","normal");
+    localStorage.setItem("userId", userCredential.user.uid);
+    window.location.href = "home.html";
+  }catch(err){
+    alert("Login failed: "+err.message);
+  }
+});
+</script>
+</body>
+</html>
